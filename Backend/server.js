@@ -1,17 +1,20 @@
 import express from "express";
-import dotenv from "dotenv";
+import connectDB from "./src/config/db.js";
 import authRouter from "./src/routes/auth.routes.js";
+import { config } from "./src/config/config.js";
 
-dotenv.config();
+
 
 const app = express();
 
+app.use(express.json());
 
+connectDB();
 
 app.use("/api/auth", authRouter);
 
 
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log(`Server is running on port ${process.env.PORT || 5000}`);
+app.listen(config.port || 5000, () => {
+  console.log(`Server is running on port ${config.port}`);
 });
