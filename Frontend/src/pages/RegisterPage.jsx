@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuth } from "../hook/useAuth";
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
 import {
   MessageCircleIcon,
@@ -8,19 +8,23 @@ import {
   UserIcon,
   LoaderIcon,
 } from "lucide-react";
-import { Link } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 
 function RegisterPage() {
+
+   const { handleRegister } = useAuth();
+   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
   });
-  const { signup, isSigningUp } = useAuthStore();
 
-  const handleSubmit = (e) => {
+  const  handleSubmit = async (e) => {
     e.preventDefault();
-    signup(formData);
+    await handleRegister(formData);
+    navigate("/");
   };
 
   return (
@@ -97,22 +101,23 @@ function RegisterPage() {
                   </div>
 
                   {/* SUBMIT BUTTON */}
-                  <button
-                    className="auth-btn"
-                    type="submit"
-                    disabled={isSigningUp}>
-                    {isSigningUp ? (
-                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
-                    ) : (
-                      "Create Account"
-                    )}
+                  <button className="auth-btn" type="submit">
+                    Create Account
                   </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                  <Link to="/login" className="auth-link">
+                {/* <div className="mt-6 text-center">
+                  <a to="/login" className="auth-link">
                     Already have an account? Login
-                  </Link>
+                  </a>
+                  
+                </div> */}
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="auth-link">
+                    Already have an account? Login
+                  </button>
                 </div>
               </div>
             </div>

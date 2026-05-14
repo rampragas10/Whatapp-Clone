@@ -1,5 +1,5 @@
+import { useAuth } from "../hook/useAuth";
 import { useState } from "react";
-import { useAuthStore } from "../store/useAuthStore";
 import BorderAnimatedContainer from "../components/BorderAnimatedContainer";
 import {
   MessageCircleIcon,
@@ -7,15 +7,27 @@ import {
   LoaderIcon,
   LockIcon,
 } from "lucide-react";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 function LoginPage() {
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const { login, isLoggingIn } = useAuthStore();
+  const { handleLogin } = useAuth();
+  const navigate = useNavigate();
 
+  //  const handleChange = (e) => {
+  //    const { name, value } = e.target;
+  //    setFormData((prev) => ({ ...prev, [name]: value }));
+  //  };
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(formData);
+    try{
+      handleLogin(formData).then(() => {
+        // navigate("/");
+      });
+    }
+    catch(err){
+      console.log("Error:", err);
+    }
   };
 
   return (
@@ -76,23 +88,26 @@ function LoginPage() {
                   </div>
 
                   {/* SUBMIT BUTTON */}
-                  <button
-                    className="auth-btn"
-                    type="submit"
-                    disabled={isLoggingIn}>
-                    {isLoggingIn ? (
-                      <LoaderIcon className="w-full h-5 animate-spin text-center" />
-                    ) : (
-                      "Sign In"
-                    )}
+                  <button className="auth-btn" type="submit">
+                    Sign In
                   </button>
                 </form>
 
-                <div className="mt-6 text-center">
-                  <Link to="/signup" className="auth-link">
+                {/* <div className="mt-6 text-center">
+                  <a
+                    onClick={() => navigate("/register")}
+                    className="auth-link">
                     Don't have an account? Sign Up
-                  </Link>
-                </div>
+                  </a>
+                </div> */}
+                <div className="mt-6 text-center">
+  <button
+    onClick={() => navigate("/register")}
+    className="auth-link"
+  >
+    Don't have an account? Sign Up
+  </button>
+</div>
               </div>
             </div>
 
