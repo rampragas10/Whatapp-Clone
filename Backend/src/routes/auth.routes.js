@@ -20,11 +20,11 @@ router.post("/logout", logout);
 // @desc    Update user profile
 router.put("/profile", authUser, updateProfile);
 
-router.put("/update-profile", protectRoute, updateProfile);
+router.put("/update-profile", authUser, updateProfile);
 
 // @route   GET api/auth/check
 // @desc    Check if user is authenticated
-router.get("/check", protectRoute, (req, res) =>
+router.get("/check", authUser, (req, res) =>
   res.status(200).json(req.user),
 );
 

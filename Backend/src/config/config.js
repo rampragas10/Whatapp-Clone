@@ -35,6 +35,15 @@ if (!process.env.CLOUDINARY_API_SECRET) {
   console.error('Error: CLOUDINARY_API_SECRET is not defined in the environment variables.');
   process.exit(1);
 }
+if (!process.env.ARCJET_KEY) {
+  console.error('Error: ARCJET_KEY is not defined in the environment variables.');
+  process.exit(1);
+}
+if (!process.env.ARCJET_ENV) {
+  console.error('Error: ARCJET_ENV is not defined in the environment variables.');
+  process.exit(1);
+}
+
 
 
 export const config = {
@@ -47,4 +56,6 @@ export const config = {
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+  ARCJET_KEY: process.env.ARCJET_KEY,
+  ARCJET_ENV: process.env.ARCJET_ENV,
 };
