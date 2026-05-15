@@ -154,11 +154,16 @@ export const useMessages = () => {
     try {
       if (!selectedUser?._id) return;
 
-      console.log("useMessages.sendMessage -> sending to:", selectedUser._id, "payload:", {
-        hasImage: !!messageData.image,
-        imageSize: messageData.image ? messageData.image.length : 0,
-        textLength: messageData.text ? messageData.text.length : 0,
-      });
+      console.log(
+        "useMessages.sendMessage -> sending to:",
+        selectedUser._id,
+        "payload:",
+        {
+          hasImage: !!messageData.image,
+          imageSize: messageData.image ? messageData.image.length : 0,
+          textLength: messageData.text ? messageData.text.length : 0,
+        },
+      );
 
       const data = await sendMessageApi(selectedUser._id, messageData);
 
