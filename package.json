@@ -2,6 +2,7 @@
   "name": "whatsapp",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   
   "scripts": {
     "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
