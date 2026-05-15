@@ -1,18 +1,18 @@
 import axios from "axios";
 
 const messageApiInstance = axios.create({
-  baseURL: "/api/messages",
+  baseURL: "http://localhost:3000/api/messages",
   withCredentials: true,
 });
 
 export const getContacts = async () => {
-    const response = await messageApiInstance.post("/contacts");
+    const response = await messageApiInstance.get("/contacts");
 
   return response.data;
 };
 
 export const getChats = async () => {
-    const response = await messageApiInstance.post("/chats");
+    const response = await messageApiInstance.get("/chats");
 
   return response.data;
 };

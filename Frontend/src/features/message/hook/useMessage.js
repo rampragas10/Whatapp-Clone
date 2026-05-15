@@ -40,19 +40,27 @@
 //   };
 // };
 
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setSelectedUser,
-  addNewMessage,
-  clearMessages,
-} from "../store/messageSlice";
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+//   // getContacts,
+//   // getChats,
+//   // getMessagesbyId,
+//   // sendMessage,
+//   // setActiveTab,
+//   // setSelectedUser,
+//   // toggleSound,
+//   // addNewMessage,
+//   // clearMessages,
+// } from "../state/message.slice";
+// import toast from "react-hot-toast";
 
 import {
   getContacts,
   getChats,
   getMessagesbyId,
   sendMessage as sendMessageApi,
-} from "../api/messageApi";
+} from "../services/message.api";
+import { useDispatch, useSelector } from "react-redux";
 
 import toast from "react-hot-toast";
 import { useState } from "react";

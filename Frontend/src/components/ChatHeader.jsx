@@ -1,11 +1,11 @@
 import { XIcon } from "lucide-react";
-import { useChatStore } from "../store/useChatStore";
+import { useMessages } from "../features/message/hook/useMessage";
 import { useEffect } from "react";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuth } from "../hook/useAuth";
 
 function ChatHeader() {
-  const { selectedUser, setSelectedUser } = useChatStore();
-  const { onlineUsers } = useAuthStore();
+  const { selectedUser, setSelectedUser } = useMessages();
+  const { onlineUsers } = useAuth();
   const isOnline = onlineUsers.includes(selectedUser._id);
 
   useEffect(() => {

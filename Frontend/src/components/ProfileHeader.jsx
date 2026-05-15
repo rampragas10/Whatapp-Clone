@@ -1,13 +1,13 @@
 import { useState, useRef } from "react";
 import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
-import { useAuthStore } from "../store/useAuthStore";
-import { useChatStore } from "../store/useChatStore";
+import { useAuth } from "../hook/useAuth";
+import { useMessages } from "../features/message/hook/useMessage";
 
 const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 
 function ProfileHeader() {
-  const { logout, authUser, updateProfile } = useAuthStore();
-  const { isSoundEnabled, toggleSound } = useChatStore();
+  const { logout, authUser, updateProfile } = useAuth();
+  const { isSoundEnabled, toggleSound } = useMessages();
   const [selectedImg, setSelectedImg] = useState(null);
 
   const fileInputRef = useRef(null);

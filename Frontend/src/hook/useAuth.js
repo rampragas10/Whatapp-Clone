@@ -6,17 +6,15 @@ export const useAuth = () => {
 
   async function handleRegister({
     email,
-    
+
     password,
-    fullname,
-   
+    fullName,
   }) {
     const data = await register({
       email,
-      
+
       password,
-      fullname,
-      
+      fullName,
     });
 
     dispatch(setUser(data.user));

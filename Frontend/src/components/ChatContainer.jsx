@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useAuthStore } from "../store/useAuthStore";
-import { useChatStore } from "../store/useChatStore";
+import { useAuth } from "../hook/useAuth";
+import { useMessages } from "../features/message/hook/useMessage";
 import ChatHeader from "./ChatHeader";
 import NoChatHistoryPlaceholder from "./NoChatHistoryPlaceholder";
 import MessageInput from "./MessageInput";
@@ -14,8 +14,8 @@ function ChatContainer() {
     isMessagesLoading,
     subscribeToMessages,
     unsubscribeFromMessages,
-  } = useChatStore();
-  const { authUser } = useAuthStore();
+  } = useMessages();
+  const { authUser } = useAuth();
   const messageEndRef = useRef(null);
 
   useEffect(() => {

@@ -3,12 +3,14 @@ import connectDB from "./src/config/db.js";
 import authRouter from "./src/routes/auth.routes.js";
 import messageRouter from "./src/routes/message.routes.js";
 import { config } from "./src/config/config.js";
+import cors from "cors";
 
 
 
 const app = express();
 
 app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 connectDB();
 

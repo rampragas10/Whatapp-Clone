@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { useChatStore } from "../store/useChatStore";
+import { useMessages } from "../features/message/hook/useMessage";
 import UsersLoadingSkeleton from "./UsersLoadingSkeleton";
-import { useAuthStore } from "../store/useAuthStore";
+import { useAuth } from "../hook/useAuth";
 
 function ContactList() {
   const { getAllContacts, allContacts, setSelectedUser, isUsersLoading } = useChatStore();

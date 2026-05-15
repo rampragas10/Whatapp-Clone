@@ -1,7 +1,7 @@
-import { useChatStore } from "../store/useChatStore";
+import { useMessages } from "../features/message/hook/useMessage";
 
 function ActiveTabSwitch() {
-  const { activeTab, setActiveTab } = useChatStore();
+  const { activeTab, setActiveTab } = useMessages();
 
   return (
     <div className="tabs tabs-boxed bg-transparent p-2 m-2">

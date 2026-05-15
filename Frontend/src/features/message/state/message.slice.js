@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance } from "../lib/axios";
+import { createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
+
 
 // ==============================
 // Initial State
@@ -16,6 +16,7 @@ const initialState = {
   isMessagesLoading: false,
   isSoundEnabled: JSON.parse(localStorage.getItem("isSoundEnabled")) === true,
 };
+
 
 // ==============================
 // Async Thunks
@@ -90,7 +91,7 @@ const initialState = {
 // ==============================
 
 const messageSlice = createSlice({
-  name: "messages",
+  name: "message",
   initialState,
 
   reducers: {
