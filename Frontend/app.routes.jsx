@@ -19,6 +19,7 @@ export const routes = createBrowserRouter([
       <ProtectedRoute>
         <ChatPage />
       </ProtectedRoute>
+      
     ),
   },
 ]);
