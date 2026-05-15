@@ -23,4 +23,7 @@ const user = await User.findById(decoded.id).select("-password");
     console.log("Error in protectRoute middleware:", error);
     res.status(500).json({ message: "Internal server error" });
   }
+  // return res.status(401).json({
+  //   message: "Unauthorized - Token Expired",
+  // });
 };

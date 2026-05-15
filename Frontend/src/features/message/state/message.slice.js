@@ -51,6 +51,12 @@ const messageSlice = createSlice({
     setSelectedUser: (state, action) => {
       state.selectedUser = action.payload;
     },
+    setisUsersLoading: (state, action) => {
+      state.isUsersLoading = action.payload;
+    },
+    setisMessagesLoading: (state, action) => {
+      state.isMessagesLoading = action.payload;
+    },
 
     toggleSound: (state) => {
       state.isSoundEnabled = !state.isSoundEnabled;
@@ -70,10 +76,10 @@ const messageSlice = createSlice({
     },
   },
 
-  extraReducers: (builder) => {
-    // Loading states are managed by useMessages hook
-    // No async thunk handlers needed
-  },
+  // extraReducers: (builder) => {
+  //   // Loading states are managed by useMessages hook
+  //   // No async thunk handlers needed
+  // },
 });
 
 export const {
@@ -85,6 +91,9 @@ export const {
   toggleSound,
   addNewMessage,
   clearMessages,
+  setisUsersLoading,
+  setisMessagesLoading,
+  
 } = messageSlice.actions;
 
 export default messageSlice.reducer;

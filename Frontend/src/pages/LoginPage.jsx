@@ -18,14 +18,12 @@ function LoginPage() {
   //    const { name, value } = e.target;
   //    setFormData((prev) => ({ ...prev, [name]: value }));
   //  };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      handleLogin(formData).then(() => {
-        // navigate("/");
-      });
-    }
-    catch(err){
+    try {
+      await handleLogin(formData);
+      navigate("/");
+    } catch (err) {
       console.log("Error:", err);
     }
   };
@@ -101,13 +99,12 @@ function LoginPage() {
                   </a>
                 </div> */}
                 <div className="mt-6 text-center">
-  <button
-    onClick={() => navigate("/register")}
-    className="auth-link"
-  >
-    Don't have an account? Sign Up
-  </button>
-</div>
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="auth-link">
+                    Don't have an account? Sign Up
+                  </button>
+                </div>
               </div>
             </div>
 

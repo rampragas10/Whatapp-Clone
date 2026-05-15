@@ -1,19 +1,22 @@
-import User from '../models/user.model.js';
-import bcrypt from 'bcryptjs';
-import { config } from '../config/config.js';
-import jwt from 'jsonwebtoken';
+import User from "../models/user.model.js";
+import bcrypt from "bcryptjs";
+import { config } from "../config/config.js";
+import jwt from "jsonwebtoken";
+import cloudinary from "../utils/cloudinary.js";
 
 //generate JWT token
 const generateToken = (user, res) => {
-  const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
+    expiresIn: "1h",
+  });
 
   res.cookie("token", token, {
     httpOnly: true, // prevent XSS attacks: cross-site scripting
-    secure: process.env.NODE_ENV === "production"? true : false, // only send cookie over HTTPS in production
+    secure: process.env.NODE_ENV === "production" ? true : false, // only send cookie over HTTPS in production
     sameSite: "strict", // CSRF attacks
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
-    return token;
+  return token;
 };
 
 export const register = async (req, res) => {
@@ -25,7 +28,8 @@ export const register = async (req, res) => {
     }
 
     if (password.length < 6) {
-      return res.status(400)
+      return res
+        .status(400)
         .json({ message: "Password must be at least 6 characters" });
     }
 
@@ -38,7 +42,7 @@ export const register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     // Hash the password
@@ -49,7 +53,7 @@ export const register = async (req, res) => {
     const user = new User({
       fullName,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     await user.save();
@@ -83,7 +87,6 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -94,9 +97,9 @@ export const login = async (req, res) => {
     const token = generateToken(user, res);
 
     res.json({ token, user });
-  } catch (error) {   
+  } catch (error) {
     res.status(500).json({ message: error.message });
-    }
+  }
 };
 
 export const logout = async (req, res) => {
@@ -123,8 +126,12 @@ export const logout = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
-    if (!profilePic)
-      return res.status(400).json({ message: "Profile pic is required" });
+
+    if (!profilePic) {
+      return res.status(400).json({
+        message: "Profile pic is required",
+      });
+    }
 
     const userId = req.user._id;
 
@@ -133,13 +140,15 @@ export const updateProfile = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePic: uploadResponse.secure_url },
-      { new: true },
+      { returnDocument: "after" },
     );
 
-    res.status(200).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in update profile:", error);
-    res.status(500).json({ message: "Internal server error" });
+
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
-

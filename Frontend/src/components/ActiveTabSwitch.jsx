@@ -1,13 +1,15 @@
-import { useMessages } from "../features/message/hook/useMessage";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveTab } from "../features/message/state/message.slice";
 
 function ActiveTabSwitch() {
-  const { activeTab, setActiveTab } = useMessages();
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.message.activeTab);
 
   return (
     <div className="tabs tabs-boxed bg-slate-900/80 p-2 m-2 rounded-xl shadow-inner shadow-cyan-500/10">
       <button
         type="button"
-        onClick={() => setActiveTab("chats")}
+        onClick={() => dispatch(setActiveTab("chats"))}
         aria-pressed={activeTab === "chats"}
         className={`tab transition-colors duration-200 ${
           activeTab === "chats"
@@ -19,7 +21,7 @@ function ActiveTabSwitch() {
 
       <button
         type="button"
-        onClick={() => setActiveTab("contacts")}
+        onClick={() => dispatch(setActiveTab("contacts"))}
         aria-pressed={activeTab === "contacts"}
         className={`tab transition-colors duration-200 ${
           activeTab === "contacts"
