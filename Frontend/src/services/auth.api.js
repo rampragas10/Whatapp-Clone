@@ -45,8 +45,10 @@ export async function logout() {
   return response.data;
 }
 
-// export async function getMe() {
-//   const response = await authApiInstance.get("/check");
+export async function getMe() {
+  const response = await authApiInstance.get("/check");
 
-//   return response.data;
-// }
+  return response.data;
+}
+
+

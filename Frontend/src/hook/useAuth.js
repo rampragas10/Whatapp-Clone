@@ -1,39 +1,59 @@
-import { login, register, logout as logoutAPI, updateProfile as updateProfileAPI } from "../services/auth.api";
+import {
+  login,
+  register,
+  logout as logoutApi,
+  updateProfile as updateProfileApi,
+  getMe as getMeAPI,
+} from "../services/auth.api";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser, setLoading, setError } from "../state/auth.slice";
+import {
+  setauthUser,
+  setisCheckingAuth,
+  setisSigningUp,
+  setisLoggingIn,
+  setsocket,
+  setonlineUsers,
+} from "../state/auth.slice";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
+
+const BASE_URL = "http://localhost:3000";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
-  const { user: authUser, loading, error } = useSelector((state) => state.auth);
+  const {
+    authUser,
+    isCheckingAuth,
+    isSigningUp,
+    isLoggingIn,
+    socket,
+    onlineUsers,
+  } = useSelector((state) => state.auth);
 
   // ==============================
   // Register
   // ==============================
 
-  async function handleRegister({
-    email,
-    password,
-    fullName,
-  }) {
+  async function handleRegister({ email, password, fullName }) {
     try {
-      dispatch(setLoading(true));
+      dispatch(setisSigningUp(true));
       const data = await register({
         email,
         password,
         fullName,
       });
 
-      dispatch(setUser(data.user));
+      dispatch(setauthUser(data.user));
+      dispatch(connectSocket());
       toast.success("Registration successful!");
       return data.user;
     } catch (err) {
-      const errorMessage = err?.response?.data?.message || "Registration failed";
-      dispatch(setError(errorMessage));
+      const errorMessage =
+        err?.response?.data?.message || "Registration failed";
       toast.error(errorMessage);
       throw err;
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setisSigningUp(false));
     }
   }
 
@@ -43,18 +63,18 @@ export const useAuth = () => {
 
   async function handleLogin({ email, password }) {
     try {
-      dispatch(setLoading(true));
+      dispatch(setisLoggingIn(true));
       const data = await login({ email, password });
-      dispatch(setUser(data.user));
+      dispatch(setauthUser(data.user));
+      dispatch(connectSocket());
       toast.success("Login successful!");
       return data.user;
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "Login failed";
-      dispatch(setError(errorMessage));
       toast.error(errorMessage);
       throw err;
     } finally {
-      dispatch(setLoading(false));
+      dispatch(setisLoggingIn(false));
     }
   }
 
@@ -64,18 +84,15 @@ export const useAuth = () => {
 
   async function updateProfile(profileData) {
     try {
-      dispatch(setLoading(true));
-      const data = await updateProfileAPI(profileData);
-      dispatch(setUser(data.user));
+      const data = await updateProfileApi(profileData);
+      dispatch(setauthUser(data));
       toast.success("Profile updated successfully!");
-      return data.user;
+      return data;
     } catch (err) {
-      const errorMessage = err?.response?.data?.message || "Profile update failed";
-      dispatch(setError(errorMessage));
+      const errorMessage =
+        err?.response?.data?.message || "Profile update failed";
       toast.error(errorMessage);
       throw err;
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 
@@ -83,29 +100,78 @@ export const useAuth = () => {
   // Logout
   // ==============================
 
-  async function logout() {
+  async function handleLogout() {
     try {
-      dispatch(setLoading(true));
-      await logoutAPI();
-      dispatch(setUser(null));
+      await logoutApi();
+      dispatch(setauthUser(null));
+      dispatch(disconnectSocket());
       toast.success("Logged out successfully!");
     } catch (err) {
       const errorMessage = err?.response?.data?.message || "Logout failed";
-      dispatch(setError(errorMessage));
       toast.error(errorMessage);
       throw err;
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 
+  const getMe = async () => {
+    try {
+      dispatch(setisCheckingAuth(true));
+      const data = await getMeAPI();
+      const user = data?.user || data;
+      dispatch(setauthUser(user));
+      if (user) {
+        dispatch(connectSocket());
+      }
+      console.log("Authenticated user:", user);
+      console.log("Socket state after authentication:", socket);
+      return user;
+    } catch (err) {
+      dispatch(setauthUser(null));
+      throw err;
+    } finally {
+      dispatch(setisCheckingAuth(false));
+    }
+  };
+
+  const connectSocket = () => (dispatch, getState) => {
+    const { authUser } = getState().auth;
+
+    if (!authUser || socket?.connected) return;
+
+    const newSocket = io(BASE_URL, {
+      withCredentials: true,
+    });
+
+    newSocket.connect();
+
+    dispatch(setsocket(newSocket));
+
+    newSocket.on("getOnlineUsers", (userIds) => {
+      dispatch(setonlineUsers(userIds));
+    });
+  };
+
+  const disconnectSocket = () => (dispatch, getState) => {
+    const { socket } = getState().auth;
+
+    if (socket?.connected) {
+      socket.disconnect();
+    }
+
+    dispatch(setsocket(null));
+  };
+
   return {
     authUser,
-    loading,
-    error,
+    isCheckingAuth,
+    isSigningUp,
+    isLoggingIn,
+    socket,
+    onlineUsers,
     handleRegister,
     handleLogin,
-    logout,
+    handleLogout,
     updateProfile,
+    getMe,
   };
 };

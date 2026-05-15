@@ -62,12 +62,12 @@ import {
 } from "../services/message.api";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setActiveTab as setActiveTabAction,
   setAllContacts,
   setChats,
   setMessages,
   setSelectedUser,
   toggleSound,
+  setActiveTab,
   addNewMessage,
   clearMessages,
 } from "../state/message.slice";
@@ -154,6 +154,12 @@ export const useMessages = () => {
     try {
       if (!selectedUser?._id) return;
 
+      console.log("useMessages.sendMessage -> sending to:", selectedUser._id, "payload:", {
+        hasImage: !!messageData.image,
+        imageSize: messageData.image ? messageData.image.length : 0,
+        textLength: messageData.text ? messageData.text.length : 0,
+      });
+
       const data = await sendMessageApi(selectedUser._id, messageData);
 
       dispatch(addNewMessage(data));
@@ -185,7 +191,7 @@ export const useMessages = () => {
   // ==============================
 
   const setActiveTab = (tab) => {
-    dispatch(setActiveTabAction(tab));
+    dispatch(setActiveTab(tab));
   };
 
   // ==============================
