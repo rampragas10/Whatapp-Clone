@@ -11,7 +11,7 @@ function MessageInput() {
 
   const fileInputRef = useRef(null);
 
-  const { sendMessage, isSoundEnabled } = useChatStore();
+  const { sendMessage, isSoundEnabled } = useMessages();
 
   const handleSendMessage = (e) => {
     e.preventDefault();

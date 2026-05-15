@@ -40,7 +40,7 @@ export async function updateProfile({ profilePic }) {
 }
 
 export async function logout() {
-  const response = await authApiInstance.get("/logout");
+  const response = await authApiInstance.post("/logout");
 
   return response.data;
 }

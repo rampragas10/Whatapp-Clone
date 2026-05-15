@@ -61,7 +61,16 @@ import {
   sendMessage as sendMessageApi,
 } from "../services/message.api";
 import { useDispatch, useSelector } from "react-redux";
-
+import {
+  setActiveTab as setActiveTabAction,
+  setAllContacts,
+  setChats,
+  setMessages,
+  setSelectedUser,
+  toggleSound,
+  addNewMessage,
+  clearMessages,
+} from "../state/message.slice";
 import toast from "react-hot-toast";
 import { useState } from "react";
 
@@ -75,7 +84,7 @@ export const useMessages = () => {
     selectedUser,
     activeTab,
     isSoundEnabled,
-  } = useSelector((state) => state.messages);
+  } = useSelector((state) => state.message);
 
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
@@ -89,6 +98,7 @@ export const useMessages = () => {
       setIsUsersLoading(true);
 
       const data = await getContacts();
+      dispatch(setAllContacts(data));
 
       return data;
     } catch (error) {
@@ -107,6 +117,7 @@ export const useMessages = () => {
       setIsUsersLoading(true);
 
       const data = await getChats();
+      dispatch(setChats(data));
 
       return data;
     } catch (error) {
@@ -125,6 +136,7 @@ export const useMessages = () => {
       setIsMessagesLoading(true);
 
       const data = await getMessagesbyId({ userId });
+      dispatch(setMessages(data));
 
       return data;
     } catch (error) {
@@ -161,6 +173,22 @@ export const useMessages = () => {
   };
 
   // ==============================
+  // Toggle Sound
+  // ==============================
+
+  const toggleSoundSetting = () => {
+    dispatch(toggleSound());
+  };
+
+  // ==============================
+  // Set Active Tab
+  // ==============================
+
+  const setActiveTab = (tab) => {
+    dispatch(setActiveTabAction(tab));
+  };
+
+  // ==============================
   // Clear Messages
   // ==============================
 
@@ -187,6 +215,8 @@ export const useMessages = () => {
     fetchMessages,
     sendMessage,
     selectUser,
+    toggleSoundSetting,
+    setActiveTab,
     removeMessages,
   };
 };

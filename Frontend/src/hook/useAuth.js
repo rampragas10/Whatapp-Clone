@@ -1,57 +1,111 @@
-import { login,register } from "../services/auth.api";
-import { useDispatch } from "react-redux";
+import { login, register, logout as logoutAPI, updateProfile as updateProfileAPI } from "../services/auth.api";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser, setLoading, setError } from "../state/auth.slice";
+import toast from "react-hot-toast";
 
 export const useAuth = () => {
   const dispatch = useDispatch();
+  const { user: authUser, loading, error } = useSelector((state) => state.auth);
+
+  // ==============================
+  // Register
+  // ==============================
 
   async function handleRegister({
     email,
-
     password,
     fullName,
   }) {
-    const data = await register({
-      email,
+    try {
+      dispatch(setLoading(true));
+      const data = await register({
+        email,
+        password,
+        fullName,
+      });
 
-      password,
-      fullName,
-    });
-
-    dispatch(setUser(data.user));
-
-    return data.user;
+      dispatch(setUser(data.user));
+      toast.success("Registration successful!");
+      return data.user;
+    } catch (err) {
+      const errorMessage = err?.response?.data?.message || "Registration failed";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
   }
+
+  // ==============================
+  // Login
+  // ==============================
 
   async function handleLogin({ email, password }) {
-    const data = await login({ email, password });
-    dispatch(setUser(data.user));
-    return data.user;
+    try {
+      dispatch(setLoading(true));
+      const data = await login({ email, password });
+      dispatch(setUser(data.user));
+      toast.success("Login successful!");
+      return data.user;
+    } catch (err) {
+      const errorMessage = err?.response?.data?.message || "Login failed";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
   }
 
-//   async function handleGetMe() {
-//     try {
-//       dispatch(setLoading(true));
-//       const data = await getMe();
-//       dispatch(setUser(data.user));
-//     } catch (err) {
-//       console.log(err);
-//     } finally {
-//       dispatch(setLoading(false));
-//     }
-//   }
+  // ==============================
+  // Update Profile
+  // ==============================
 
-//   async function handleLogout() {
-//     try {
-//       dispatch(setLoading(true));
-//       await logout();
-//       dispatch(setUser(null));
-//     } catch (err) {
-//       console.log(err);
-//       dispatch(setError(err.message || "Logout failed"));
-//     } finally {
-//       dispatch(setLoading(false));
-//     }
-//   }
+  async function updateProfile(profileData) {
+    try {
+      dispatch(setLoading(true));
+      const data = await updateProfileAPI(profileData);
+      dispatch(setUser(data.user));
+      toast.success("Profile updated successfully!");
+      return data.user;
+    } catch (err) {
+      const errorMessage = err?.response?.data?.message || "Profile update failed";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
 
-  return { handleRegister, handleLogin  };
+  // ==============================
+  // Logout
+  // ==============================
+
+  async function logout() {
+    try {
+      dispatch(setLoading(true));
+      await logoutAPI();
+      dispatch(setUser(null));
+      toast.success("Logged out successfully!");
+    } catch (err) {
+      const errorMessage = err?.response?.data?.message || "Logout failed";
+      dispatch(setError(errorMessage));
+      toast.error(errorMessage);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+
+  return {
+    authUser,
+    loading,
+    error,
+    handleRegister,
+    handleLogin,
+    logout,
+    updateProfile,
+  };
 };

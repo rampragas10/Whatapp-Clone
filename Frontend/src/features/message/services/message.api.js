@@ -23,8 +23,8 @@ export const getMessagesbyId = async ({ userId }) => {
   return response.data;
 };
 
-export const sendMessage = async (userId) => {
-  const response = await messageApiInstance.post(`/send/${userId}`);
+export const sendMessage = async (userId, messageData) => {
+  const response = await messageApiInstance.post(`/send/${userId}`, messageData);
   return response.data;
 };
 

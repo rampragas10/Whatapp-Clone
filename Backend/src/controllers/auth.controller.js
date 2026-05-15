@@ -99,9 +99,25 @@ export const login = async (req, res) => {
     }
 };
 
-export const logout = (_, res) => {
-  res.cookie("jwt", "", { maxAge: 0 });
-  res.status(200).json({ message: "Logged out successfully" });
+export const logout = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.log("Logout error:", error);
+
+    res.status(500).json({
+      message: "Logout failed",
+    });
+  }
 };
 
 export const updateProfile = async (req, res) => {
