@@ -18,8 +18,6 @@ router.post("/logout", logout);
 
 // @route   PUT api/auth/profile
 // @desc    Update user profile
-router.put("/profile", authUser, updateProfile);
-
 router.put("/update-profile", authUser, updateProfile);
 
 // @route   GET api/auth/check

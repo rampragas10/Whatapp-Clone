@@ -1,13 +1,13 @@
 import { useState, useRef } from "react";
 import { LogOutIcon, VolumeOffIcon, Volume2Icon } from "lucide-react";
-import { useAuthStore } from "../store/useAuthStore";
-import { useChatStore } from "../store/useChatStore";
+import { useAuth } from "../hook/useAuth";
+import { useMessages } from "../features/message/hook/useMessage";
 
 const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 
 function ProfileHeader() {
-  const { logout, authUser, updateProfile } = useAuthStore();
-  const { isSoundEnabled, toggleSound } = useChatStore();
+  const { logout, authUser, updateProfile } = useAuth();
+  const { isSoundEnabled, toggleSoundSetting } = useMessages();
   const [selectedImg, setSelectedImg] = useState(null);
 
   const fileInputRef = useRef(null);
@@ -37,7 +37,7 @@ function ProfileHeader() {
               onClick={() => fileInputRef.current.click()}
             >
               <img
-                src={selectedImg || authUser.profilePic || "/avatar.png"}
+                src={selectedImg || authUser?.profilePic || "/avatar.png"}
                 alt="User image"
                 className="size-full object-cover"
               />
@@ -58,7 +58,7 @@ function ProfileHeader() {
           {/* USERNAME & ONLINE TEXT */}
           <div>
             <h3 className="text-slate-200 font-medium text-base max-w-[180px] truncate">
-              {authUser.fullName}
+              {authUser?.fullName || "User"}
             </h3>
 
             <p className="text-slate-400 text-xs">Online</p>
@@ -82,7 +82,7 @@ function ProfileHeader() {
               // play click sound before toggling
               mouseClickSound.currentTime = 0; // reset to start
               mouseClickSound.play().catch((error) => console.log("Audio play failed:", error));
-              toggleSound();
+              toggleSoundSetting();
             }}
           >
             {isSoundEnabled ? (

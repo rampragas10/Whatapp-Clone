@@ -4,7 +4,7 @@ import { config } from '../config/config.js';
 import jwt from 'jsonwebtoken';
 
 //generate JWT token
-const generateToken = (user) => {
+const generateToken = (user, res) => {
   const token = jwt.sign({ id: user._id }, config.JWT_SECRET, { expiresIn: '1h' });
 
   res.cookie("token", token, {
@@ -18,15 +18,14 @@ const generateToken = (user) => {
 
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { fullName, email, password } = req.body;
 
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     if (password.length < 6) {
-      return res
-        .status(400)
+      return res.status(400)
         .json({ message: "Password must be at least 6 characters" });
     }
 
@@ -48,7 +47,7 @@ export const register = async (req, res) => {
 
     // Create new user
     const user = new User({
-      username,
+      fullName,
       email,
       password: hashedPassword
     });
@@ -56,7 +55,7 @@ export const register = async (req, res) => {
     await user.save();
 
     // Generate JWT token
-    const token = generateToken(user);
+    const token = generateToken(user, res);
 
     res.status(201).json({ token, user });
   } catch (error) {
@@ -92,7 +91,7 @@ export const login = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = generateToken(user);
+    const token = generateToken(user, res);
 
     res.json({ token, user });
   } catch (error) {   
@@ -100,9 +99,25 @@ export const login = async (req, res) => {
     }
 };
 
-export const logout = (_, res) => {
-  res.cookie("jwt", "", { maxAge: 0 });
-  res.status(200).json({ message: "Logged out successfully" });
+export const logout = async (req, res) => {
+  try {
+    res.cookie("token", "", {
+      maxAge: 0,
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.log("Logout error:", error);
+
+    res.status(500).json({
+      message: "Logout failed",
+    });
+  }
 };
 
 export const updateProfile = async (req, res) => {
